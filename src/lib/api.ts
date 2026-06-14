@@ -18,6 +18,9 @@ export async function* sendMessageStream(
   prompt: string,
   history: HistoryEntry[] = [],
   model?: string,
+  provider = "openai",
+  providerKey = "",
+  sourceText?: string,
   signal?: AbortSignal,
 ) {
   const messages = history.map((m) => ({
@@ -27,11 +30,17 @@ export async function* sendMessageStream(
 
   const response = await fetch(`${API}/chat`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", ...(await authHeaders()) },
+    headers: {
+      "Content-Type": "application/json",
+      ...(await authHeaders()),
+      ...(providerKey ? { "X-Provider-Key": providerKey } : {}),
+    },
     body: JSON.stringify({
       message: prompt,
       history: messages,
       model,
+      provider,
+      source_text: sourceText ?? null,
     }),
     signal,
   });
@@ -54,18 +63,27 @@ export async function* sendMessageStream(
 }
 
 export interface ModelInfo {
-  name: string;
-  size: number;
-  modified_at: string;
+  id: string;
+  label: string;
+  web_search: boolean;
 }
 
-export interface ModelsResponse {
-  default: string;
+export interface ProviderInfo {
+  label: string;
   models: ModelInfo[];
 }
 
-export async function listModels(): Promise<ModelsResponse> {
-  const response = await fetch(`${API}/models`, { headers: await authHeaders() });
-  if (!response.ok) throw new Error("Impossible de charger les modeles.");
+export interface ModelsResponse {
+  providers: Record<string, ProviderInfo>;
+}
+
+export async function listModels(providerKey?: string): Promise<ModelsResponse> {
+  const response = await fetch(`${API}/models`, {
+    headers: {
+      ...(await authHeaders()),
+      ...(providerKey ? { "X-Provider-Key": providerKey } : {}),
+    },
+  });
+  if (!response.ok) throw new Error("Impossible de charger les modèles.");
   return response.json();
 }

@@ -14,6 +14,7 @@ export interface FSConversation {
   id: string;
   title: string;
   model: string;
+  provider?: string;
   messages: Array<{ id: string; role: string; content: string }>;
   updatedAt: number;
 }
@@ -21,6 +22,7 @@ export interface FSConversation {
 export interface UserPreferences {
   theme: string;
   model: string;
+  provider?: string;
 }
 
 // ── Conversations ────────────────────────────────────────────────────────────
