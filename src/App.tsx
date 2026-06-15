@@ -267,9 +267,13 @@ export default function App() {
 
     try {
       let accumulated = "";
+      const effectiveModel = models.some((m) => m.id === selectedModel)
+        ? selectedModel
+        : models[0]?.id ?? selectedModel;
+
       const stream = sendMessageStream(
         inputValue, history,
-        selectedModel, selectedProvider,
+        effectiveModel, selectedProvider,
         providerKeys[selectedProvider] ?? "",
         sourceText || undefined,
         abortController.signal,
@@ -342,8 +346,8 @@ export default function App() {
         {/* Left Navigation */}
         <nav className="hidden md:flex w-20 border-r border-[#E5E2DD] flex-col items-center justify-between py-10 shrink-0">
           <div className="flex flex-col items-center gap-8">
-            <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center">
-              <div className="w-3 h-3 bg-white rotate-45" />
+            <div className="w-8 h-8 bg-black rotate-45 rounded-sm flex items-center justify-center">
+              <div className="w-5 h-5 bg-white rounded-full -rotate-45" />
             </div>
             <span className="text-[10px] tracking-[0.3em] font-semibold text-[#8C8C8C] uppercase [writing-mode:vertical-rl] rotate-180">
               AR1ST0T3

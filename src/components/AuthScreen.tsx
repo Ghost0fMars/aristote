@@ -42,11 +42,11 @@ export default function AuthScreen() {
       <div className="w-full max-w-sm px-8">
         {/* Logo */}
         <div className="flex flex-col items-center mb-12">
-          <div className="w-8 h-8 rounded-full bg-black dark:bg-white flex items-center justify-center mb-6">
-            <div className="w-3 h-3 bg-white dark:bg-black rotate-45" />
+          <div className="w-8 h-8 bg-black dark:bg-white rotate-45 rounded-sm flex items-center justify-center mb-6">
+            <div className="w-5 h-5 bg-white dark:bg-black rounded-full -rotate-45" />
           </div>
           <span className="text-[10px] tracking-[0.4em] font-semibold text-[#8C8C8C] uppercase">
-            S0CR4T3
+            AR1ST0T3
           </span>
         </div>
 

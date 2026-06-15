@@ -48,6 +48,7 @@ STATIC_MODELS: dict = {
             {"id": "gpt-4o-search-preview", "label": "GPT-4o Search", "web_search": True},
             {"id": "gpt-4o-mini-search-preview", "label": "GPT-4o mini Search", "web_search": True},
             {"id": "gpt-4o", "label": "GPT-4o", "web_search": False},
+            {"id": "gpt-4o-mini", "label": "GPT-4o mini", "web_search": False},
             {"id": "gpt-4.1", "label": "GPT-4.1", "web_search": False},
             {"id": "gpt-4.1-mini", "label": "GPT-4.1 mini", "web_search": False},
             {"id": "o4-mini", "label": "o4-mini", "web_search": False},
@@ -261,7 +262,11 @@ async def chat(body: ChatRequest, raw: Request, uid: str = Depends(verify_token)
     tension = calculate_dramatic_tension(history_list, body.message, context)
 
     system = _build_system(body.source_text, tension["tension_score"], tension["maieutic_posture"])
-    model = body.model or "gpt-4o"
+
+    provider_models = STATIC_MODELS.get(body.provider, {}).get("models", [])
+    valid_ids = {m["id"] for m in provider_models}
+    default_model = provider_models[0]["id"] if provider_models else "gpt-4o"
+    model = body.model if (body.model and body.model in valid_ids) else default_model
 
     messages: list[dict] = [{"role": "system", "content": system}]
     for msg in body.history:
